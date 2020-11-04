@@ -2,7 +2,8 @@
 # All our code will be in here
 
 from flask import Flask
-from flask import render_template
+from flask import render_template, request
+from flask import request 
 
 app = Flask(__name__)
 @app.route("/") #/ means root, .route is function, when the git request shows up to the server and it's blank, it wants whatever is in root
@@ -14,9 +15,25 @@ def index():
 #flask is a python file executing python functions
 # @ is the decorator
 # when the 
-@app.route('/mike')
-def mike():
-    return render_template('mike.html')
+@app.route('/estimate', methods=['GET', 'POST'])
+def estimate():
+    if request.method== 'POST':
+        form = request.form
+        userRadius = float(form['radius'])
+        userHeight = float(form['height'])
+        pi = 3.14
+        areaTop = pi*userRadius**2
+        areaSides = 2*(pi*(userRadius*userHeight))
+        totalArea = areaTop + areaSides
+        totalPrice = 24*totalArea + 15*totalArea
+        str = "${:,.2f}"
+        totalPrice = str.format(totalPrice)
+        return render_template('estimate.html', estimate=totalPrice)
+    return render_template('estimate.html')
+    
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
